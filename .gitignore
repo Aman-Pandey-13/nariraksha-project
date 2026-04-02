@@ -1,12 +1,67 @@
-# Node
+############################
+# 🔹 Node.js / Backend
+############################
 node_modules/
-.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Android
+.env
+.env.*
+*.env
+
+dist/
+build/
+
+############################
+# 🔹 Android / Gradle
+############################
 .gradle/
 build/
-local.properties
-.idea/
+*/build/
 
-# OS
+local.properties
+
+.idea/
+*.iml
+
+captures/
+.externalNativeBuild/
+.cxx/
+
+############################
+# 🔹 APK / Output Files
+############################
+*.apk
+*.aab
+
+############################
+# 🔹 Logs & Temp
+############################
+*.log
+*.tmp
+*.temp
+
+############################
+# 🔹 OS Files
+############################
 .DS_Store
+Thumbs.db
+
+############################
+# 🔹 VS Code / Editors
+############################
+.vscode/
+*.swp
+*.swo
+
+############################
+# 🔹 Java / Kotlin
+############################
+*.class
+*.jar
+
+############################
+# 🔹 Misc
+############################
+coverage/
