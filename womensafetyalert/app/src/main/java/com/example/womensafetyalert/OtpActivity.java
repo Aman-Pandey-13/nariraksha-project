@@ -18,22 +18,57 @@ public class OtpActivity extends AppCompatActivity {
         etOtp = findViewById(R.id.etOtp);
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
 
-        String email = getIntent().getStringExtra("email");
-
         btnVerifyOtp.setOnClickListener(v -> {
+
             String otp = etOtp.getText().toString().trim();
 
-            if(otp.isEmpty()) {
+            if (otp.isEmpty()) {
                 Toast.makeText(this, "Enter OTP", Toast.LENGTH_SHORT).show();
-            } else {
-                // TODO: Call backend verify-otp API with email + otp
-
-                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-
-                // Go to Home/Dashboard
-                startActivity(new Intent(this, MainpageActivity.class));
-                finish();
+                return;
             }
+
+            String email = getIntent().getStringExtra("email");
+
+            OtpRequest request = new OtpRequest(email, otp);
+
+            ApiService apiService = RetrofitClient.getApiService();
+
+            apiService.verifyOtp(request).enqueue(new retrofit2.Callback<okhttp3.ResponseBody>() {
+
+                @Override
+                public void onResponse(retrofit2.Call<okhttp3.ResponseBody> call,
+                                       retrofit2.Response<okhttp3.ResponseBody> response) {
+
+                    if (response.isSuccessful()) {
+
+                        Toast.makeText(OtpActivity.this,
+                                "Login Success",
+                                Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(OtpActivity.this, MainpageActivity.class);
+
+                        // 🔥 IMPORTANT (prevents going back)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                        startActivity(intent);
+
+                    } else {
+
+                        Toast.makeText(OtpActivity.this,
+                                "Invalid OTP",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<okhttp3.ResponseBody> call,
+                                      Throwable t) {
+
+                    Toast.makeText(OtpActivity.this,
+                            "Error: " + t.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
         });
     }
 }
