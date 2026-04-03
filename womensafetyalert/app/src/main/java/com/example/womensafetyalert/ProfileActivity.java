@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import okhttp3.ResponseBody;
 import retrofit2.*;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -85,25 +86,30 @@ public class ProfileActivity extends AppCompatActivity {
 
         UserResponse u = new UserResponse();
 
-        u.email = email;
-        u.name = etName.getText().toString();
-        u.phone = etPhone.getText().toString();
-        u.contact1 = etC1.getText().toString();
-        u.contact2 = etC2.getText().toString();
-        u.contact3 = etC3.getText().toString();
+        u.setEmail(email);
+        u.setName(etName.getText().toString());
+        u.setPhone(etPhone.getText().toString());
+        u.setContact1(etC1.getText().toString());
+        u.setContact2(etC2.getText().toString());
+        u.setContact3(etC3.getText().toString());
 
-        api.updateUser(u).enqueue(new Callback<okhttp3.ResponseBody>() {
+        api.updateUser(u).enqueue(new Callback<ResponseBody>() {
+
             @Override
-            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> res) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> res) {
 
                 if (res.isSuccessful()) {
                     Toast.makeText(ProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Update Failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Update failed", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this,
+                        "Error: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

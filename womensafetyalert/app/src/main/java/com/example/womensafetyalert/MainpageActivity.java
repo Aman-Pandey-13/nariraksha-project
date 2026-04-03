@@ -31,14 +31,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+
 public class MainpageActivity extends AppCompatActivity {
 
     private static final int PERMISSION_CODE = 101;
     LocationCallback locationCallback;
     private Button btnSOS;
     private TextView tvAbout, tvHome, tvVideos;
+
+    TextView profileButton;
     private LinearLayout recentActivityContainer;
-    Button profileButton;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -47,17 +49,20 @@ public class MainpageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainpage);
 
-        btnSOS = findViewById(R.id.btnSOS);
-        tvHome = findViewById(R.id.tvHome);
-        tvAbout = findViewById(R.id.tvAbout);
         profileButton = findViewById(R.id.profileButton);
-        tvVideos = findViewById(R.id.tvVideos);
-        recentActivityContainer = findViewById(R.id.recentActivityContainer);
-
 
         profileButton.setOnClickListener(v -> {
             startActivity(new Intent(MainpageActivity.this, ProfileActivity.class));
         });
+
+
+        btnSOS = findViewById(R.id.btnSOS);
+        tvHome = findViewById(R.id.tvHome);
+        tvAbout = findViewById(R.id.tvAbout);
+        tvVideos = findViewById(R.id.tvVideos);
+        recentActivityContainer = findViewById(R.id.recentActivityContainer);
+
+
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 

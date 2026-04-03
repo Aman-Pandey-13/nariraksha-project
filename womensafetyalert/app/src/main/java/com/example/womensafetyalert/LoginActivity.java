@@ -1,6 +1,7 @@
 package com.example.womensafetyalert;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -33,6 +35,17 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
 
+        SharedPreferences sp = getSharedPreferences("UserData", MODE_PRIVATE);
+        boolean isLoggedIn = sp.getBoolean("isLoggedIn", false);
+
+        // ✅ AUTO LOGIN FIX
+        if (isLoggedIn) {
+            startActivity(new Intent(this, MainpageActivity.class));
+            finish();
+            return; // VERY IMPORTANT
+        }
+
+        // ✅ Click listeners AFTER login check
         btnLogin.setOnClickListener(v -> loginUser());
 
         tvRegister.setOnClickListener(v ->

@@ -50,7 +50,7 @@
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
-<!--        <activity android:name=".ProfileActivity"/>-->
+        <activity android:name=".ProfileActivity"/>
 
         <activity android:name=".CameraActivity"/>
         <activity android:name=".VideosActivity"/>

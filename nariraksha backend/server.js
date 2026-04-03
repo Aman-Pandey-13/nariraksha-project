@@ -169,6 +169,41 @@ app.post("/api/resend-otp", async (req, res) => {
   }
 });
 
+// GET USER PROFILE
+app.get("/api/user/:email", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      contact1: user.contact1,
+      contact2: user.contact2,
+      contact3: user.contact3,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+app.put("/api/update-user", async (req, res) => {
+  try {
+    const { email, name, phone, contact1, contact2, contact3 } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { email },
+      { name, phone, contact1, contact2, contact3 },
+      { new: true },
+    );
+
+    res.json({ message: "Profile Updated" });
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 /* ================= TEST ROUTE ================= */
 app.get("/", (req, res) => {
   res.send("NariRaksha Backend Running ✅");

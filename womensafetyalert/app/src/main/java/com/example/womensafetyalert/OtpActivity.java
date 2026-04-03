@@ -1,6 +1,7 @@
 package com.example.womensafetyalert;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,6 +57,13 @@ public class OtpActivity extends AppCompatActivity {
                         Intent intent = new Intent(OtpActivity.this, MainpageActivity.class);
 
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        SharedPreferences sp = getSharedPreferences("UserData", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+
+                        editor.putBoolean("isLoggedIn", true);
+                        editor.putString("email", email);
+
+                        editor.apply();
 
                         startActivity(intent);
 
