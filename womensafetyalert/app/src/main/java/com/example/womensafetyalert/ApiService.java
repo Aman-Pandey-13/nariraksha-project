@@ -15,4 +15,7 @@ public interface ApiService {
 
     @POST("api/verify-otp")
     Call<ResponseBody> verifyOtp(@Body OtpRequest request);
+
+    @POST("/api/resend-otp")
+    Call<ResponseBody> resendOtp(@Body EmailRequest request);
 }

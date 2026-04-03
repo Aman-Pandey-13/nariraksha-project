@@ -104,8 +104,6 @@ app.post("/api/login", async (req, res) => {
 
 /* ================= VERIFY OTP ================= */
 app.post("/api/verify-otp", async (req, res) => {
-  console.log("🔥 VERIFY OTP DATA:", req.body);
-
   try {
     const { email, otp } = req.body;
 
@@ -115,21 +113,58 @@ app.post("/api/verify-otp", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    if (!user.otp || user.otp !== otp || user.otpExpires < Date.now()) {
-      return res.status(400).json({
-        message: "Invalid or expired OTP",
-      });
+    // ✅ STRICT CHECK
+    if (!user.otp || user.otp !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    // clear OTP
+    // ✅ EXPIRY CHECK
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
+
+    // ✅ CLEAR OTP AFTER SUCCESS
     user.otp = null;
     user.otpExpires = null;
+    await user.save();
+
+    res.json({ message: "OTP Verified Successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// ================== Resend Otp ================= */
+
+app.post("/api/resend-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // generate new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
 
     await user.save();
 
-    res.json({ message: "OTP Verified" });
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Resent OTP",
+      text: `Your new OTP is ${otp}`,
+    });
+
+    res.json({ message: "OTP Resent Successfully" });
   } catch (err) {
-    console.error("❌ OTP ERROR:", err);
+    console.error(err);
     res.status(500).json({ message: "Server Error" });
   }
 });

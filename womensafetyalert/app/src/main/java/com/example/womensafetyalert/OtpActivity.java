@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class OtpActivity extends AppCompatActivity {
 
     EditText etOtp;
-    Button btnVerifyOtp;
+    Button btnVerifyOtp, btnResendOtp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +22,11 @@ public class OtpActivity extends AppCompatActivity {
 
         etOtp = findViewById(R.id.etOtp);
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
+        btnResendOtp = findViewById(R.id.btnResendOtp);
+
+        String email = getIntent().getStringExtra("email");
+
+        /* ================= VERIFY OTP ================= */
 
         btnVerifyOtp.setOnClickListener(v -> {
 
@@ -27,17 +37,15 @@ public class OtpActivity extends AppCompatActivity {
                 return;
             }
 
-            String email = getIntent().getStringExtra("email");
-
             OtpRequest request = new OtpRequest(email, otp);
 
             ApiService apiService = RetrofitClient.getApiService();
 
-            apiService.verifyOtp(request).enqueue(new retrofit2.Callback<okhttp3.ResponseBody>() {
+            apiService.verifyOtp(request).enqueue(new Callback<ResponseBody>() {
 
                 @Override
-                public void onResponse(retrofit2.Call<okhttp3.ResponseBody> call,
-                                       retrofit2.Response<okhttp3.ResponseBody> response) {
+                public void onResponse(Call<ResponseBody> call,
+                                       Response<ResponseBody> response) {
 
                     if (response.isSuccessful()) {
 
@@ -47,7 +55,6 @@ public class OtpActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(OtpActivity.this, MainpageActivity.class);
 
-                        // 🔥 IMPORTANT (prevents going back)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                         startActivity(intent);
@@ -61,7 +68,46 @@ public class OtpActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(retrofit2.Call<okhttp3.ResponseBody> call,
+                public void onFailure(Call<ResponseBody> call,
+                                      Throwable t) {
+
+                    Toast.makeText(OtpActivity.this,
+                            "Error: " + t.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+
+        /* ================= RESEND OTP ================= */
+
+        btnResendOtp.setOnClickListener(v -> {
+
+            EmailRequest request = new EmailRequest(email);
+
+            ApiService apiService = RetrofitClient.getApiService();
+
+            apiService.resendOtp(request).enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(Call<ResponseBody> call,
+                                       Response<ResponseBody> response) {
+
+                    if (response.isSuccessful()) {
+
+                        Toast.makeText(OtpActivity.this,
+                                "OTP Resent Successfully",
+                                Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Toast.makeText(OtpActivity.this,
+                                "Failed to resend OTP",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call,
                                       Throwable t) {
 
                     Toast.makeText(OtpActivity.this,
