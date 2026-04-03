@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AboutActivity extends AppCompatActivity {
 
-    TextView tvHome, tvAbout, tvServices, tvContact;
+    TextView tvHome, tvAbout, tvVideos, tvContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class AboutActivity extends AppCompatActivity {
 
         tvHome = findViewById(R.id.tvHome);
         tvAbout = findViewById(R.id.tvAbout);
-        tvServices = findViewById(R.id.tvvideos);
+        tvVideos = findViewById(R.id.tvVideos);
         tvContact = findViewById(R.id.tvprofile);
 
         // Home Click
@@ -31,6 +31,9 @@ public class AboutActivity extends AppCompatActivity {
         // About Click (already here)
         tvAbout.setOnClickListener(v -> {
             // Do nothing
+        });
+        tvVideos.setOnClickListener(v -> {
+            startActivity(new Intent(this, VideosActivity.class));
         });
     }
 }

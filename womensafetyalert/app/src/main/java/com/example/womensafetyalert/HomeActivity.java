@@ -11,6 +11,7 @@ public class HomeActivity extends AppCompatActivity {
 
     Button btnLearnMore;
     TextView tvAbout;
+    TextView tvVideos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,7 @@ public class HomeActivity extends AppCompatActivity {
 
         btnLearnMore = findViewById(R.id.btnLearnMore);
         tvAbout = findViewById(R.id.tvAbout);
+        tvVideos = findViewById(R.id.tvVideos);
 
         // Learn More → Login
         btnLearnMore.setOnClickListener(view -> {
@@ -30,6 +32,11 @@ public class HomeActivity extends AppCompatActivity {
         tvAbout.setOnClickListener(view -> {
             Intent intent = new Intent(HomeActivity.this, AboutActivity.class);
             startActivity(intent);
+        });
+        tvVideos.setOnClickListener(view -> {
+            Intent intent = new Intent(HomeActivity.this, VideosActivity.class);
+            startActivity(intent);
+
         });
     }
 }

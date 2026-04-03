@@ -4,6 +4,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public interface ApiService {
 
@@ -18,4 +20,7 @@ public interface ApiService {
 
     @POST("/api/resend-otp")
     Call<ResponseBody> resendOtp(@Body EmailRequest request);
+
+    @GET("/api/user/{email}")
+    Call<UserResponse> getUser(@Path("email") String email);
 }

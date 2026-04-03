@@ -36,8 +36,9 @@ public class MainpageActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 101;
     LocationCallback locationCallback;
     private Button btnSOS;
-    private TextView tvAbout, tvHome;
+    private TextView tvAbout, tvHome, tvVideos;
     private LinearLayout recentActivityContainer;
+    Button profileButton;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -49,7 +50,14 @@ public class MainpageActivity extends AppCompatActivity {
         btnSOS = findViewById(R.id.btnSOS);
         tvHome = findViewById(R.id.tvHome);
         tvAbout = findViewById(R.id.tvAbout);
+        profileButton = findViewById(R.id.profileButton);
+        tvVideos = findViewById(R.id.tvVideos);
         recentActivityContainer = findViewById(R.id.recentActivityContainer);
+
+
+        profileButton.setOnClickListener(v -> {
+            startActivity(new Intent(MainpageActivity.this, ProfileActivity.class));
+        });
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -62,6 +70,9 @@ public class MainpageActivity extends AppCompatActivity {
 
         tvAbout.setOnClickListener(v ->
                 startActivity(new Intent(this, AboutActivity.class)));
+        tvVideos.setOnClickListener(v -> {
+            startActivity(new Intent(this, VideosActivity.class));
+        });
     }
 
     /* ================= CHECK PERMISSIONS ================= */
@@ -78,13 +89,19 @@ public class MainpageActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.SEND_SMS,
-                            Manifest.permission.CALL_PHONE
+                            Manifest.permission.SEND_SMS
                     }, PERMISSION_CODE);
 
-        } else {
+        }
+        else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, 100);
+        }
+        else{
             getAccurateLocationAndSendSOS();
         }
+
     }
 
     /* ================= PERMISSION RESULT ================= */
@@ -96,25 +113,15 @@ public class MainpageActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PERMISSION_CODE) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            if (grantResults.length > 0) {
+                getAccurateLocationAndSendSOS();
 
-                boolean allGranted = true;
-
-                for (int result : grantResults) {
-                    if (result != PackageManager.PERMISSION_GRANTED) {
-                        allGranted = false;
-                        break;
-                    }
-                }
-
-                if (allGranted) {
-                    getAccurateLocationAndSendSOS();
-                } else {
-                    Toast.makeText(this,
-                            "All Permissions Required!",
-                            Toast.LENGTH_SHORT).show();
-                }
+            } else {
+                Toast.makeText(this,
+                        "Permissions Required!",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -198,25 +205,20 @@ public class MainpageActivity extends AppCompatActivity {
 
         addRecentActivity("🚨SOS Sent with Location");
         makeEmergencyCall();
-
+        startActivity(new Intent(this, CameraActivity.class));
 
     }
 
-//    // ================= EMERGENCY CALL =================
+    //    // ================= EMERGENCY CALL =================
+    // private static final String EMERGENCY_NUMBER = "+918291418150";//saniya number
     private static final String EMERGENCY_NUMBER = "+919970549171";
     private void makeEmergencyCall() {
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    200);
             return;
         }
-
-        Toast.makeText(this, "Calling...", Toast.LENGTH_SHORT).show();
 
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + EMERGENCY_NUMBER));
