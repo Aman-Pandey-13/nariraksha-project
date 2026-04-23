@@ -1,60 +1,55 @@
 package com.example.womensafetyalert;
 
 import android.os.Bundle;
-import android.widget.*;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import okhttp3.ResponseBody;
-import retrofit2.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    EditText etName, etEmail, etPhone, etC1, etC2, etC3;
-    Button btnEditSave;
-    Button profileButton;
-
-    boolean isEdit = false;
-    String email;
+    TextView tvName, tvEmail, tvPhone, tvContact1, tvContact2, tvContact3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
-        etPhone = findViewById(R.id.etPhone);
-        etC1 = findViewById(R.id.etC1);
-        etC2 = findViewById(R.id.etC2);
-        etC3 = findViewById(R.id.etC3);
-        btnEditSave = findViewById(R.id.btnEditSave);
+        tvName = findViewById(R.id.tvName);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvPhone = findViewById(R.id.tvPhone);
+        tvContact1 = findViewById(R.id.tvContact1);
+        tvContact2 = findViewById(R.id.tvContact2);
+        tvContact3 = findViewById(R.id.tvContact3);
 
-        email = getSharedPreferences("UserData", MODE_PRIVATE)
-                .getString("email", "");
-
+        // 🔥 CALL FUNCTION DIRECTLY (NO PARAM)
         loadUser();
-
-        disableFields();
-
-        btnEditSave.setOnClickListener(v -> {
-            if (!isEdit) {
-                enableFields();
-                btnEditSave.setText("Save");
-                isEdit = true;
-            } else {
-                updateUser();
-                disableFields();
-                btnEditSave.setText("Edit");
-                isEdit = false;
-            }
-        });
     }
 
     private void loadUser() {
 
-        ApiService apiService = RetrofitClient.getApiService();
+        String email = getSharedPreferences("UserData", MODE_PRIVATE)
+                .getString("email", "");
 
-        apiService.getUser(email).enqueue(new Callback<UserResponse>() {
+        // 🔥 DEBUG CHECK
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Email not found!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService api = RetrofitClient.getApiService();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("email", email);
+
+        api.getUser(map).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
 
@@ -62,72 +57,27 @@ public class ProfileActivity extends AppCompatActivity {
 
                     UserResponse user = response.body();
 
-                    etName.setText(user.getName());
-                    etEmail.setText(user.getEmail());
-                    etPhone.setText(user.getPhone());
-                    etC1.setText(user.getContact1());
-                    etC2.setText(user.getContact2());
-                    etC3.setText(user.getContact3());
+                    tvName.setText(user.getName() != null ? user.getName() : "N/A");
+                    tvEmail.setText(user.getEmail() != null ? user.getEmail() : "N/A");
+                    tvPhone.setText(user.getPhone() != null ? user.getPhone() : "N/A");
+
+                    tvContact1.setText(user.getContact1() != null ? user.getContact1() : "N/A");
+                    tvContact2.setText(user.getContact2() != null ? user.getContact2() : "N/A");
+                    tvContact3.setText(user.getContact3() != null ? user.getContact3() : "N/A");
+
+                } else {
+                    Toast.makeText(ProfileActivity.this,
+                            "No data received from server",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this,
-                        "Error: " + t.getMessage(),
+                        "API Error: " + t.getMessage(),
                         Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void updateUser() {
-
-        ApiService api = RetrofitClient.getApiService();
-
-        UserResponse u = new UserResponse();
-
-        u.setEmail(email);
-        u.setName(etName.getText().toString());
-        u.setPhone(etPhone.getText().toString());
-        u.setContact1(etC1.getText().toString());
-        u.setContact2(etC2.getText().toString());
-        u.setContact3(etC3.getText().toString());
-
-        api.updateUser(u).enqueue(new Callback<ResponseBody>() {
-
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> res) {
-
-                if (res.isSuccessful()) {
-                    Toast.makeText(ProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Update Failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this,
-                        "Error: " + t.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void disableFields() {
-        etName.setEnabled(false);
-        etEmail.setEnabled(false);
-        etPhone.setEnabled(false);
-        etC1.setEnabled(false);
-        etC2.setEnabled(false);
-        etC3.setEnabled(false);
-    }
-
-    private void enableFields() {
-        etName.setEnabled(true);
-        etPhone.setEnabled(true);
-        etC1.setEnabled(true);
-        etC2.setEnabled(true);
-        etC3.setEnabled(true);
     }
 }

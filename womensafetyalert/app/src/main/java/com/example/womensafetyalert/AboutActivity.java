@@ -19,7 +19,7 @@ public class AboutActivity extends AppCompatActivity {
         tvHome = findViewById(R.id.tvHome);
         tvAbout = findViewById(R.id.tvAbout);
         tvVideos = findViewById(R.id.tvVideos);
-        tvContact = findViewById(R.id.tvprofile);
+//        tvContact = findViewById(R.id.tvprofile);
 
         // Home Click
         tvHome.setOnClickListener(v -> {

@@ -39,12 +39,12 @@
                 android:layout_height="wrap_content"
                 android:text="Videos"/>
 
-            <TextView
-                android:id="@+id/tvprofile"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Profile"/>
+<!--            <TextView-->
+<!--                android:id="@+id/tvprofile"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Profile"/>-->
         </LinearLayout>
 
         <!-- Main Title -->

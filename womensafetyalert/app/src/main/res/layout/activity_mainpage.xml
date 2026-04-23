@@ -49,7 +49,7 @@
                 android:textColor="#3F2B96"/>
 
             <TextView
-                android:id="@+id/profileButton"
+                android:id="@+id/tvProfile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -1,5 +1,7 @@
 package com.example.womensafetyalert;
 
+import java.util.Map;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -22,10 +24,9 @@ public interface ApiService {
     @POST("/api/resend-otp")
     Call<ResponseBody> resendOtp(@Body EmailRequest request);
 
-    @GET("/api/user/{email}")
-    Call<UserResponse> getUser(@Path("email") String email);
+    @POST("/api/get-user")
+    Call<UserResponse> getUser(@Body Map<String, String> body);
 
-    @PUT("/api/update-user")
-    Call<ResponseBody> updateUser(@Body UserResponse user);
+
 
 }

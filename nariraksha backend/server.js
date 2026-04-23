@@ -170,22 +170,27 @@ app.post("/api/resend-otp", async (req, res) => {
 });
 
 // GET USER PROFILE
-app.get("/api/user/:email", async (req, res) => {
+/* ================= GET USER FOR PROFILE ================= */
+
+app.post("/api/get-user", async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.params.email });
+    const { email } = req.body;
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findOne({ email }).select("-password");
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json({
       name: user.name,
       email: user.email,
-      phone: user.phone,
-      contact1: user.contact1,
-      contact2: user.contact2,
-      contact3: user.contact3,
+      phone: user.phoneNumber, // 🔥 FIX
+      contact1: user.emergencyContacts[0] || "",
+      contact2: user.emergencyContacts[1] || "",
+      contact3: user.emergencyContacts[2] || "",
     });
   } catch (err) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

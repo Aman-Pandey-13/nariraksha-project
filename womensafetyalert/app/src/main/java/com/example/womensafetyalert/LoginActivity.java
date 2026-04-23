@@ -39,11 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         boolean isLoggedIn = sp.getBoolean("isLoggedIn", false);
 
         // ✅ AUTO LOGIN FIX
-        if (isLoggedIn) {
-            startActivity(new Intent(this, MainpageActivity.class));
-            finish();
-            return; // VERY IMPORTANT
-        }
+//        if (isLoggedIn) {
+//            startActivity(new Intent(this, MainpageActivity.class));
+//            finish();
+//            return; // VERY IMPORTANT
+//        }
 
         // ✅ Click listeners AFTER login check
         btnLogin.setOnClickListener(v -> loginUser());

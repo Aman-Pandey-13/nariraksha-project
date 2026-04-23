@@ -1,5 +1,6 @@
 package com.example.womensafetyalert;
 
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,38 +32,32 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
 public class MainpageActivity extends AppCompatActivity {
 
     private static final int PERMISSION_CODE = 101;
     LocationCallback locationCallback;
     private Button btnSOS;
-    private TextView tvAbout, tvHome, tvVideos;
-
-    TextView profileButton;
+    private TextView tvAbout, tvHome, tvVideos, tvProfile;
     private LinearLayout recentActivityContainer;
 
     private FusedLocationProviderClient fusedLocationClient;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainpage);
 
-        profileButton = findViewById(R.id.profileButton);
-
-        profileButton.setOnClickListener(v -> {
-            startActivity(new Intent(MainpageActivity.this, ProfileActivity.class));
-        });
+        userEmail = getIntent().getStringExtra("email");
 
 
         btnSOS = findViewById(R.id.btnSOS);
         tvHome = findViewById(R.id.tvHome);
         tvAbout = findViewById(R.id.tvAbout);
         tvVideos = findViewById(R.id.tvVideos);
+        tvProfile = findViewById(R.id.tvProfile);
+
         recentActivityContainer = findViewById(R.id.recentActivityContainer);
-
-
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -71,6 +66,15 @@ public class MainpageActivity extends AppCompatActivity {
         tvHome.setOnClickListener(v -> {
             startActivity(new Intent(this, HomeActivity.class));
             finish();
+        });
+        //profile text to profile page
+        tvProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+
+            // Pass user email (IMPORTANT for backend)
+            intent.putExtra("email", userEmail);
+
+            startActivity(intent);
         });
 
         tvAbout.setOnClickListener(v ->
@@ -216,7 +220,7 @@ public class MainpageActivity extends AppCompatActivity {
 
     //    // ================= EMERGENCY CALL =================
     // private static final String EMERGENCY_NUMBER = "+918291418150";//saniya number
-    private static final String EMERGENCY_NUMBER = "+919970549171";
+    private static final String EMERGENCY_NUMBER = "+918070124747";
     private void makeEmergencyCall() {
 
         if (ActivityCompat.checkSelfPermission(this,
