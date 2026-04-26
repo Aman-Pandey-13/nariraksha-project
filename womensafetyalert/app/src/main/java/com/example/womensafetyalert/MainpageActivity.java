@@ -34,6 +34,8 @@ import java.util.Locale;
 
 public class MainpageActivity extends AppCompatActivity {
 
+
+
     private static final int PERMISSION_CODE = 101;
     LocationCallback locationCallback;
     private Button btnSOS;
@@ -220,7 +222,7 @@ public class MainpageActivity extends AppCompatActivity {
 
     //    // ================= EMERGENCY CALL =================
     // private static final String EMERGENCY_NUMBER = "+918291418150";//saniya number
-    private static final String EMERGENCY_NUMBER = "+918070124747";
+    private static final String EMERGENCY_NUMBER = "+918655713998";//police number
     private void makeEmergencyCall() {
 
         if (ActivityCompat.checkSelfPermission(this,

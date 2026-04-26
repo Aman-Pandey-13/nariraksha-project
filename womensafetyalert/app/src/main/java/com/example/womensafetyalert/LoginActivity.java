@@ -38,12 +38,12 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("UserData", MODE_PRIVATE);
         boolean isLoggedIn = sp.getBoolean("isLoggedIn", false);
 
-        // ✅ AUTO LOGIN FIX
-//        if (isLoggedIn) {
-//            startActivity(new Intent(this, MainpageActivity.class));
-//            finish();
-//            return; // VERY IMPORTANT
-//        }
+//         ✅ AUTO LOGIN FIX
+        if (isLoggedIn) {
+            startActivity(new Intent(this, MainpageActivity.class));
+            finish();
+            return; // VERY IMPORTANT
+        }
 
         // ✅ Click listeners AFTER login check
         btnLogin.setOnClickListener(v -> loginUser());

@@ -64,8 +64,6 @@ app.post("/api/register", async (req, res) => {
 
 /* ================= LOGIN (SEND OTP) ================= */
 app.post("/api/login", async (req, res) => {
-  console.log("🔥 LOGIN DATA:", req.body);
-
   try {
     const { email, password } = req.body;
 
